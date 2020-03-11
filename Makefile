@@ -2,20 +2,21 @@ pull:
 	git pull
 
 build:
-	/usr/local/go/bin/go build *.go
+	mkdir -p build
+	go build -o build/astoria-hc *.go
 
 run:
-	/usr/local/go/bin/go run *.go
+	go run *.go
 
 install:
-	mv gpio astoria-hc
-	chmod +x astoria-hc
+	chmod +x build/astoria-hc
 	-curl -s -XGET localhost:2112/exit
-	sudo cp astoria-hc /usr/local/bin/astoria-hc
+	sudo cp build/astoria-hc /usr/local/bin/astoria-hc
 
 clean:
-	rm main
-	rm astoria-hc
+	rm -f main
+	rm -f astoria-hc
+	rm -rf build
 
 stage: pull run
 
