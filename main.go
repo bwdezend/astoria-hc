@@ -154,7 +154,7 @@ func temperatureErrorDetection() {
                     countdown = 2
                 }
             }
-        } else if countcown < 2 {
+        } else if countdown < 2 {
             log.Printf("Warning: boiler does not appear to be heating (%.2f gt %.2f). Countdown: %d", last_temp, current, countdown)
             countdown = 2
         }
