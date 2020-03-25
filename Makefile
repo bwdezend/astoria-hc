@@ -15,6 +15,7 @@ install:
 
 lint:
 	find . -type f -name "*go" -exec gofmt -w {} \;
+	find . -type f -name "*go" -exec golint {} \;
 
 clean:
 	rm -f main

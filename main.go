@@ -133,7 +133,7 @@ func temperatureErrorDetection() {
 	// fired. Less common reasons would be a heater element malfunction, a boiler
 	// rupture, etc.
 
-	last_temp := 0.0
+	lastTemp := 0.0
 	countdown := 2
 	for {
 		setpoint := acc.Thermostat.TargetTemperature.GetValue()
@@ -143,21 +143,21 @@ func temperatureErrorDetection() {
 		error := (setpoint - current)
 
 		if error > 5.0 {
-			if last_temp >= current {
+			if lastTemp >= current {
 				if countdown > 0 {
-					log.Printf("Warning: boiler does not appear to be heating (%.2f gt %.2f). Countdown: %d", last_temp, current, countdown)
-					countdown -= 1
+					log.Printf("Warning: boiler does not appear to be heating (%.2f gt %.2f). Countdown: %d", lastTemp, current, countdown)
+					countdown--
 				} else if countdown == 0 {
-					log.Printf("Error: boiler does not appear to be heating (%.2f gt %.2f). Changing setpoint to 0.0", last_temp, current)
+					log.Printf("Error: boiler does not appear to be heating (%.2f gt %.2f). Changing setpoint to 0.0", lastTemp, current)
 					setTargetTemp(0.0)
 					countdown = 2
 				}
 			}
 		} else if countdown < 2 {
-			log.Printf("Warning: boiler does not appear to be heating (%.2f gt %.2f). Countdown: %d", last_temp, current, countdown)
+			log.Printf("Warning: boiler does not appear to be heating (%.2f gt %.2f). Countdown: %d", lastTemp, current, countdown)
 			countdown = 2
 		}
-		last_temp = current
+		lastTemp = current
 	}
 }
 

@@ -9,13 +9,13 @@ import (
 	"net/http"
 )
 
-type Update struct {
+type updateVars struct {
 	Temperature float64 `json:"temperature,omitempty"`
 	Proportion  float64 `json:"proportion,omitempty"`
 }
 
 func updateSettings(w http.ResponseWriter, r *http.Request) {
-	var update Update
+	var update updateVars
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 		if err != nil {
