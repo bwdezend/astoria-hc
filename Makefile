@@ -13,6 +13,9 @@ install:
 	-curl -s -XGET localhost:2112/exit
 	sudo cp build/astoria-hc /usr/local/bin/astoria-hc
 
+lint:
+	find . -type f -name "*go" -exec gofmt -w {} \;
+
 clean:
 	rm -f main
 	rm -f astoria-hc
