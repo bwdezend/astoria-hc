@@ -1,17 +1,16 @@
 package main
 
 import (
-	"bufio"
 	"flag"
-	"github.com/brutella/hc"
-	"github.com/brutella/hc/accessory"
 	"log"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"strconv"
 	"syscall"
 	"time"
+
+	"github.com/brutella/hc"
+	"github.com/brutella/hc/accessory"
+	"github.com/vemo-france/max31865"
 )
 
 var acc accessory.Thermostat
@@ -38,30 +37,42 @@ var gpio = flag.Bool("gpio", true, "load gpio code")
 var p = 3.0
 
 func getCurrentTemp() {
-	// Reads the boiler current temp from disk, as output by the python program
-	// that is translating the RTD amplifier signal to degrees C.
-
-	// TODO: decode the RTD directly inside this function
-
-	var newTemp float64 = 0
-
+	sensor := max31865.Create("8", "9", "10", "11")
+	var boilerTemperature float64
 	for {
-		f, err := os.Open(filepath.Join(*path, "current_temp"))
-		check(err)
-
-		sc := bufio.NewScanner(f)
-		for sc.Scan() {
-			newTemp, err = strconv.ParseFloat(sc.Text(), 64)
-		}
-		f.Close()
-		check(err)
-
-		acc.Thermostat.CurrentTemperature.SetValue(newTemp)
-		currentTemperature.Set(newTemp)
+		boilerTemperature = float64(sensor.ReadTemperature(100, 430))
+		acc.Thermostat.CurrentTemperature.SetValue(boilerTemperature)
+		currentTemperature.Set(boilerTemperature)
 		time.Sleep(500 * time.Millisecond)
 	}
 
 }
+
+//func getCurrentTemp() {
+//	// Reads the boiler current temp from disk, as output by the python program
+//	// that is translating the RTD amplifier signal to degrees C.
+//
+//	// TODO: decode the RTD directly inside this function
+//
+//	var newTemp float64 = 0
+//
+//	for {
+//		f, err := os.Open(filepath.Join(*path, "current_temp"))
+//		check(err)
+//
+//		sc := bufio.NewScanner(f)
+//		for sc.Scan() {
+//			newTemp, err = strconv.ParseFloat(sc.Text(), 64)
+//		}
+//		f.Close()
+//		check(err)
+//
+//		acc.Thermostat.CurrentTemperature.SetValue(newTemp)
+//		currentTemperature.Set(newTemp)
+//		time.Sleep(500 * time.Millisecond)
+//	}
+//
+//}
 
 func setTargetTemp(setTemp float64) {
 	// Adjust the setpoint for the PID loop and updates the homekit interfaces
