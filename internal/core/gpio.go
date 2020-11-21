@@ -1,16 +1,20 @@
-package main
+package core
 
 import (
-	"github.com/stianeikeland/go-rpio"
 	"log"
 	"time"
+
+	"github.com/brutella/hc/accessory"
+	"github.com/bwdezend/astoria-hc/internal/telemetry"
+	"github.com/stianeikeland/go-rpio"
 )
 
 func init() {
 	rpio.Open()
 }
 
-func hwButton() {
+// PowerButton doc
+func PowerButton(acc accessory.Thermostat) {
 	high := 124.0
 	low := 30.0
 
@@ -22,9 +26,9 @@ func hwButton() {
 		if button.Read() == 0 {
 			log.Println("button pressed")
 			if acc.Thermostat.TargetTemperature.GetValue() >= (high - 10.0) {
-				setTargetTemp(low)
+				SetTargetTemp(acc, low)
 			} else {
-				setTargetTemp(high)
+				SetTargetTemp(acc, high)
 			}
 			time.Sleep(500 * time.Millisecond)
 		}
@@ -32,11 +36,12 @@ func hwButton() {
 	}
 }
 
-func heaterControl(on bool) {
+// HeaterControl doc
+func HeaterControl(on bool) {
 	pin := rpio.Pin(14)
 	pin.Output()
 
-	relayActivations.Inc()
+	telemetry.RelayActivations.Inc()
 	if on {
 		pin.High()
 	} else {

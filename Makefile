@@ -9,8 +9,17 @@ build:
 		-v $(PWD):/build \
 		-w /build \
 		golang \
-		bash -c 'go mod vendor && go build -mod=vendor -o build/astoria-hc .'
-
+		bash -c 'go mod vendor && go build -mod=vendor -o espressod cmd/main.go'
+	docker run \
+		--rm \
+		-e HOST_USER=$(HOST_USER) \
+		-e GOOS=linux \
+		-e GOARCH=arm \
+		-e GOARM=5 \
+                -v $(PWD):/build \
+                -w /build \
+                golang \
+                bash -c 'go mod vendor && go build -mod=vendor -o espressod_armv5 cmd/main.go'
 
 check: go_fmt go_lint go_vet
 
@@ -53,6 +62,7 @@ docker:
 
 clean:
 	rm -f main
-	rm -f astoria-hc
+	rm -f espressod
+	rm -f espressod_armv5
 	rm -rf build
 
