@@ -20,8 +20,13 @@ func GetCurrentTemp(acc accessory.Thermostat) {
 	var boilerTemperature float64
 	for {
 		boilerTemperature = float64(sensor.ReadTemperature(100, 430))
-		acc.Thermostat.CurrentTemperature.SetValue(boilerTemperature)
-		telemetry.CurrentTemperature.Set(boilerTemperature)
+		if boilerTemperature < 1.0 {
+			telemetry.SensorFaultCount.Inc()
+			log.Println("Sensor fault")
+		} else {
+			acc.Thermostat.CurrentTemperature.SetValue(boilerTemperature)
+			telemetry.CurrentTemperature.Set(boilerTemperature)
+		}
 		time.Sleep(500 * time.Millisecond)
 	}
 

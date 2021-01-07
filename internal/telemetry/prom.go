@@ -35,6 +35,12 @@ var (
 		Name: "setpoint_temperature_celsius",
 		Help: "The current setpoint temperature",
 	})
+
+	// SensorFaultCount is the desired temperature
+	SensorFaultCount = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "sensor_fault_total",
+		Help: "The number of times the sensor has read faulty data",
+	})
 )
 
 func exitProgram(w http.ResponseWriter, r *http.Request) {
