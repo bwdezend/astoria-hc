@@ -61,6 +61,9 @@ func main() {
 		go telemetry.PrometheusMetrics(*prometheusPort)
 	}
 
+	// Recover previously set temperature on program start
+	core.SetTargetTemp(acc, core.RecoverTemp())
+
 	// Picks up the current temperature every second from *path/current_temp
 	go core.GetCurrentTemp(acc)
 
