@@ -11,7 +11,8 @@ import (
 
 var p = 3.0
 
-// GetCurrentTemp doc
+// GetCurrentTemp read from the MAX31865 to read
+// the current state of the steam side of the boiler temperature
 func GetCurrentTemp(acc accessory.Thermostat) {
 	if err := max31865.Init(); err != nil {
 		log.Fatalf("initialization failed : %s", err)
@@ -29,7 +30,6 @@ func GetCurrentTemp(acc accessory.Thermostat) {
 		}
 		time.Sleep(500 * time.Millisecond)
 	}
-
 }
 
 // SetTargetTemp adjusts the setpoint for the PID loop and updates the homekit interfaces
