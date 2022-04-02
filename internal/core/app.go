@@ -39,6 +39,8 @@ func SetTargetTemp(acc accessory.Thermostat, setTemp float64) {
 	}
 
 	log.Printf("setting setpoint to %.2f", setTemp)
+	PersistTemp(setTemp)
+
 	acc.Thermostat.TargetTemperature.SetValue(setTemp)
 	telemetry.SetpointTemperature.Set(setTemp)
 }
@@ -74,7 +76,10 @@ func HeaterWindow(windowSize float64, enabledTime float64, gpioEnabled bool) {
 func TemperatureProportional(acc accessory.Thermostat, gpioEnabled bool) {
 
 	for {
-		current := acc.Thermostat.CurrentTemperature.GetValue()
+		current := 0.0
+		if gpioEnabled {
+			current = acc.Thermostat.CurrentTemperature.GetValue()
+		}
 		setpoint := acc.Thermostat.TargetTemperature.GetValue()
 		error := (setpoint - current) * p * 0.1
 
