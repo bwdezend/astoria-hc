@@ -13,7 +13,9 @@ func init() {
 	rpio.Open()
 }
 
-// PowerButton doc
+// PowerButton sets up the button hooked to pin 26
+// on the Rasberry Pi to act as a high/low control
+// for the system.
 func PowerButton(acc accessory.Thermostat) {
 	high := 124.0
 	low := 30.0
@@ -36,7 +38,8 @@ func PowerButton(acc accessory.Thermostat) {
 	}
 }
 
-// HeaterControl doc
+// HeaterControl turns on and off voltate to the
+// pin hooked to the Solid State Relay.
 func HeaterControl(on bool) {
 	pin := rpio.Pin(14)
 	pin.Output()

@@ -11,6 +11,12 @@ func init() {
 
 }
 
+
+// PersistTemp creates a file in /dev/shm
+// and saves the setppoint temperature to it. Every time
+// the setupoint is changed, this function should be called
+// and will persist the value. This is not persistant across
+// system reboots.
 func PersistTemp(currentTemp float64) {
 	persistFile := "/dev/shm/persistFile"
 	f, err := os.OpenFile(persistFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
@@ -22,8 +28,10 @@ func PersistTemp(currentTemp float64) {
 	f.Sync()
 }
 
+// RecoverTemp is a companion to PersistTemp,
+// reading from the file in /dev/shm and setting the setpoint
+// at application startup.
 func RecoverTemp() (recoverTemp float64) {
-	//recoverTemp = 0.0
 	recoverFile := "/dev/shm/persistFile"
 
 	log.Printf("reading setpoint from %s", recoverFile)
