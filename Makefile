@@ -1,4 +1,5 @@
 HOST_USER := $(shell whoami)
+.PHONY: build
 
 build:
 	mkdir -p build
@@ -59,6 +60,10 @@ run:
 
 docker:
 	docker build -t astoria-hc:latest . < Dockerfile
+
+deploy:
+	scp espressod_armv5 pi@astoria:espressod_armv5
+
 
 clean:
 	rm -f main
